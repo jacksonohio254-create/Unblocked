@@ -4,28 +4,1042 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ArcadeVault - Unblocked Games</title>
-    <meta name="description" content="A clean, fast unblocked games portal featuring classic arcade, puzzle, retro, and action games playable directly in-browser with iframe support, custom game embeds, and tab disguise." />
+    <meta name="description" content="A clean, fast unblocked games portal featuring games playable directly in-browser with iframe support, custom game embeds, and tab disguise." />
     <meta property="og:title" content="ArcadeVault - Unblocked Games" />
-    <meta property="og:description" content="A clean, fast unblocked games portal featuring classic arcade, puzzle, retro, and action games playable directly in-browser with iframe support, custom game embeds, and tab disguise." />
+    <meta property="og:description" content="A clean, fast unblocked games portal featuring games playable directly in-browser with iframe support, custom game embeds, and tab disguise." />
     <meta property="og:type" content="website" />
-    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+    <link id="app-favicon" rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%236366f1'%3E%3Cpath d='M21 6H3c-1.1 0-2 .9-2 2v8c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-10 7H8v3H6v-3H3v-2h3V8h2v3h3v2zm4.5 2c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm4-3c-.83 0-1.5-.67-1.5-1.5S18.67 9 19.5 9s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z'/%3E%3C/svg%3E" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="./assets/app.css">
-  </head>
-  <body class="bg-slate-950 text-slate-100 antialiased min-h-screen selection:bg-indigo-500 selection:text-white">
-    <div id="root"></div>
-    <script type="module">
-      // Universal entry point:
-      // In Vite dev server (AI Studio), load live TypeScript module
-      // On static hosts (GitHub Pages, file://), load compiled ./assets/app.js bundle
-      if (window.location.port === '3000' || window.location.hostname.includes('run.app')) {
-        import('/src/main.tsx').catch(() => import('./assets/app.js'));
-      } else {
-        import('./assets/app.js');
+    <style>
+      :root {
+        --bg-color: #030712;
+        --surface-color: #0b1120;
+        --surface-card: #0f172a;
+        --border-color: #1e293b;
+        --primary: #6366f1;
+        --primary-hover: #4f46e5;
+        --text-main: #f8fafc;
+        --text-muted: #94a3b8;
       }
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+      body {
+        font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+        background-color: var(--bg-color);
+        color: var(--text-main);
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        overflow-x: hidden;
+      }
+      h1, h2, h3, h4, .font-display { font-family: 'Outfit', sans-serif; }
+      a { color: inherit; text-decoration: none; }
+      button { font-family: inherit; cursor: pointer; }
+      
+      /* Navigation Bar */
+      header {
+        position: sticky;
+        top: 0;
+        z-index: 40;
+        background: rgba(3, 7, 18, 0.92);
+        backdrop-filter: blur(12px);
+        border-bottom: 1px solid var(--border-color);
+        padding: 0.85rem 1.5rem;
+      }
+      .nav-container {
+        max-width: 80rem;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 2rem;
+      }
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: #fff;
+        background: none;
+        border: none;
+      }
+      .brand svg { width: 1.35rem; height: 1.35rem; fill: var(--primary); }
+      .nav-links {
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: var(--text-muted);
+      }
+      .nav-link {
+        background: none;
+        border: none;
+        color: var(--text-muted);
+        transition: color 0.15s;
+        white-space: nowrap;
+      }
+      .nav-link:hover, .nav-link.active { color: #fff; }
+      .primary-btn {
+        background: var(--primary);
+        color: #fff;
+        border: none;
+        padding: 0.45rem 1rem;
+        border-radius: 0.5rem;
+        font-size: 0.875rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+        transition: background 0.15s, transform 0.1s;
+        white-space: nowrap;
+      }
+      .primary-btn:hover { background: var(--primary-hover); transform: translateY(-1px); }
+      .primary-btn:active { transform: translateY(0); }
+
+      /* Main container */
+      main { flex: 1; max-width: 80rem; width: 100%; margin: 0 auto; padding: 1.5rem; }
+
+      /* Hero section */
+      .hero {
+        background: radial-gradient(circle at top right, rgba(99, 102, 241, 0.15), transparent 50%), #0f172a;
+        border: 1px solid var(--border-color);
+        border-radius: 1rem;
+        padding: 2rem;
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 2rem;
+        margin-bottom: 2rem;
+      }
+      @media (min-width: 900px) {
+        .hero { grid-template-columns: 1.3fr 1fr; align-items: center; }
+      }
+      .hero-title {
+        font-size: clamp(1.75rem, 3.5vw, 2.5rem);
+        font-weight: 800;
+        line-height: 1.15;
+        color: #fff;
+        margin-bottom: 0.75rem;
+      }
+      .hero-desc {
+        color: var(--text-muted);
+        font-size: 0.95rem;
+        line-height: 1.6;
+        margin-bottom: 1.5rem;
+      }
+      .hero-banner-card {
+        border-radius: 0.75rem;
+        overflow: hidden;
+        border: 1px solid var(--border-color);
+        aspect-ratio: 16/10;
+        position: relative;
+        cursor: pointer;
+        background: #020617;
+      }
+      .hero-banner-card img { width: 100%; height: 100%; object-fit: cover; }
+      .hero-banner-overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, transparent 60%);
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        padding: 1.25rem;
+      }
+
+      /* Search & Filters */
+      .toolbar {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        margin-bottom: 2rem;
+      }
+      .toolbar-row {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+      }
+      .search-box {
+        position: relative;
+        flex: 1;
+        max-width: 28rem;
+      }
+      .search-box input {
+        width: 100%;
+        background: var(--surface-card);
+        border: 1px solid var(--border-color);
+        color: #fff;
+        padding: 0.65rem 1rem 0.65rem 2.25rem;
+        border-radius: 0.65rem;
+        font-size: 0.875rem;
+        outline: none;
+      }
+      .search-box input:focus { border-color: var(--primary); }
+      .search-icon {
+        position: absolute;
+        left: 0.75rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #64748b;
+        width: 1rem;
+        height: 1rem;
+      }
+      .sort-select {
+        background: var(--surface-card);
+        border: 1px solid var(--border-color);
+        color: var(--text-main);
+        padding: 0.6rem 1rem;
+        border-radius: 0.65rem;
+        font-size: 0.85rem;
+        outline: none;
+      }
+      .category-tabs {
+        display: flex;
+        gap: 0.4rem;
+        background: var(--surface-card);
+        border: 1px solid var(--border-color);
+        padding: 0.3rem;
+        border-radius: 0.75rem;
+        overflow-x: auto;
+      }
+      .tab-btn {
+        background: transparent;
+        border: none;
+        color: var(--text-muted);
+        padding: 0.4rem 0.85rem;
+        border-radius: 0.5rem;
+        font-size: 0.8rem;
+        font-weight: 600;
+        white-space: nowrap;
+        transition: all 0.15s;
+      }
+      .tab-btn:hover { color: #fff; }
+      .tab-btn.active { background: var(--primary); color: #fff; }
+
+      /* Game Cards Grid */
+      .games-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+        gap: 1.5rem;
+      }
+      .game-card {
+        background: var(--surface-card);
+        border: 1px solid var(--border-color);
+        border-radius: 0.75rem;
+        overflow: hidden;
+        cursor: pointer;
+        transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+        display: flex;
+        flex-direction: column;
+      }
+      .game-card:hover {
+        transform: translateY(-3px);
+        border-color: #334155;
+        box-shadow: 0 12px 24px -10px rgba(99, 102, 241, 0.2);
+      }
+      .game-card-thumb {
+        position: relative;
+        aspect-ratio: 16/9;
+        background: #020617;
+        overflow: hidden;
+      }
+      .game-card-thumb img { width: 100%; height: 100%; object-fit: cover; }
+      .fav-star-btn {
+        position: absolute;
+        top: 0.6rem;
+        right: 0.6rem;
+        background: rgba(0,0,0,0.6);
+        border: none;
+        border-radius: 0.4rem;
+        padding: 0.35rem;
+        color: #cbd5e1;
+      }
+      .fav-star-btn.active { color: #f59e0b; }
+      .game-card-body {
+        padding: 1rem;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+      }
+      .game-title {
+        font-size: 1.05rem;
+        font-weight: 700;
+        color: #fff;
+        margin-bottom: 0.35rem;
+      }
+      .game-desc {
+        color: var(--text-muted);
+        font-size: 0.8rem;
+        line-height: 1.5;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+      .game-meta {
+        margin-top: 0.85rem;
+        padding-top: 0.85rem;
+        border-top: 1px solid rgba(255,255,255,0.06);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-size: 0.75rem;
+        color: var(--text-muted);
+      }
+
+      /* Game Player View */
+      .player-view { display: none; }
+      .player-header {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        margin-bottom: 0.75rem;
+      }
+      .btn-back {
+        background: var(--surface-card);
+        border: 1px solid var(--border-color);
+        color: #fff;
+        padding: 0.45rem 0.85rem;
+        border-radius: 0.5rem;
+        font-size: 0.85rem;
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+      }
+      .iframe-box {
+        position: relative;
+        width: 100%;
+        border-radius: 0.85rem;
+        overflow: hidden;
+        border: 1px solid var(--border-color);
+        background: #000;
+        aspect-ratio: 16/9;
+        max-height: 80vh;
+      }
+      .iframe-box.theater { max-height: 88vh; }
+      .iframe-box iframe { width: 100%; height: 100%; border: none; }
+
+      /* Modals */
+      .modal-backdrop {
+        position: fixed;
+        inset: 0;
+        z-index: 50;
+        background: rgba(0,0,0,0.8);
+        backdrop-filter: blur(4px);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 1rem;
+      }
+      .modal-box {
+        background: #0f172a;
+        border: 1px solid var(--border-color);
+        border-radius: 1rem;
+        max-width: 32rem;
+        width: 100%;
+        padding: 1.5rem;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+        max-height: 90vh;
+        overflow-y: auto;
+      }
+      .modal-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: 1px solid var(--border-color);
+        padding-bottom: 0.85rem;
+        margin-bottom: 1rem;
+      }
+      .modal-title { font-size: 1.15rem; font-weight: 700; color: #fff; }
+      .modal-close { background: none; border: none; color: #94a3b8; font-size: 1.25rem; }
+
+      /* Form elements */
+      .form-group { margin-bottom: 1rem; }
+      .form-label { display: block; font-size: 0.75rem; font-weight: 600; color: #cbd5e1; text-transform: uppercase; margin-bottom: 0.35rem; }
+      .form-input {
+        width: 100%;
+        background: #020617;
+        border: 1px solid var(--border-color);
+        color: #fff;
+        padding: 0.6rem 0.85rem;
+        border-radius: 0.5rem;
+        font-size: 0.85rem;
+        outline: none;
+      }
+      .form-input:focus { border-color: var(--primary); }
+
+      /* Floating Panic Button */
+      .panic-btn {
+        position: fixed;
+        bottom: 1.25rem;
+        right: 1.25rem;
+        z-index: 30;
+        background: rgba(15, 23, 42, 0.95);
+        color: #34d399;
+        border: 1px solid rgba(52, 211, 153, 0.4);
+        padding: 0.45rem 0.9rem;
+        border-radius: 9999px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        box-shadow: 0 10px 25px -5px rgba(0,0,0,0.5);
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+        transition: transform 0.15s;
+      }
+      .panic-btn:hover { transform: scale(1.05); }
+
+      /* Screen Mask Overlay */
+      #screen-mask {
+        position: fixed;
+        inset: 0;
+        z-index: 9999;
+        background: #fff;
+        color: #202124;
+        display: none;
+        overflow-y: auto;
+      }
+
+      footer {
+        border-top: 1px solid var(--border-color);
+        padding: 2rem 1.5rem;
+        margin-top: 3rem;
+        color: var(--text-muted);
+        font-size: 0.8rem;
+        text-align: center;
+      }
+      @media (max-width: 768px) {
+        .nav-links { display: none; }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Top Navigation Bar -->
+    <header>
+      <div class="nav-container">
+        <button class="brand" onclick="goHome()">
+          <svg viewBox="0 0 24 24"><path d="M21 6H3c-1.1 0-2 .9-2 2v8c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-10 7H8v3H6v-3H3v-2h3V8h2v3h3v2zm4.5 2c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm4-3c-.83 0-1.5-.67-1.5-1.5S18.67 9 19.5 9s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>
+          <span>ArcadeVault</span>
+        </button>
+
+        <nav class="nav-links">
+          <button class="nav-link active" onclick="setCategory('All')">All Games</button>
+          <button class="nav-link" onclick="setCategory('Favorites')">Favorites (<span id="fav-count">0</span>)</button>
+          <button class="nav-link" onclick="openModal('add-modal')">+ Add Game</button>
+          <button class="nav-link" onclick="openModal('cloak-modal')">Tab Disguise</button>
+          <button class="nav-link" onclick="openModal('json-modal')">JSON Database</button>
+        </nav>
+
+        <div>
+          <button class="primary-btn" onclick="playRandomGame()">
+            <span>🎲 Random Game</span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main>
+      <!-- Lobby / Catalog Section -->
+      <div id="lobby-section">
+        <!-- Hero Section -->
+        <div id="hero-banner" class="hero">
+          <div>
+            <div style="font-size: 0.75rem; font-weight: 700; color: #818cf8; text-transform: uppercase; margin-bottom: 0.5rem; letter-spacing: 0.05em;">Featured Game</div>
+            <h1 id="hero-title" class="hero-title">Bloxity.io</h1>
+            <p id="hero-desc" class="hero-desc">Play fast, unblocked 3D parkour obstacle courses directly in-browser with full pointer lock and keyboard controls.</p>
+            <div style="display: flex; gap: 0.75rem;">
+              <button class="primary-btn" onclick="playFeaturedGame()">▶ Play Now</button>
+              <button class="btn-back" onclick="playRandomGame()">Surprise Me</button>
+            </div>
+          </div>
+          <div class="hero-banner-card" onclick="playFeaturedGame()">
+            <img id="hero-img" src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=600&auto=format&fit=crop&q=80" alt="Featured Game" />
+            <div class="hero-banner-overlay">
+              <div style="font-weight: 700; font-size: 1.1rem; color: #fff;" id="hero-card-title">Bloxity.io</div>
+              <div style="font-size: 0.8rem; color: #cbd5e1;">★ 4.9 · 3D Obby Platformer</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Filter & Search Toolbar -->
+        <div class="toolbar">
+          <div class="toolbar-row">
+            <div class="search-box">
+              <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+              <input type="text" id="search-input" placeholder="Search games by title, tags, or description..." oninput="handleSearch()" />
+            </div>
+
+            <div>
+              <select id="sort-select" class="sort-select" onchange="handleSort()">
+                <option value="popular">Most Popular</option>
+                <option value="rating">Top Rated</option>
+                <option value="az">Alphabetical (A-Z)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="category-tabs" id="category-tabs">
+            <button class="tab-btn active" onclick="setCategory('All')">All Games</button>
+            <button class="tab-btn" onclick="setCategory('Action')">Action</button>
+            <button class="tab-btn" onclick="setCategory('Arcade')">Arcade</button>
+            <button class="tab-btn" onclick="setCategory('Retro')">Retro</button>
+            <button class="tab-btn" onclick="setCategory('Puzzle')">Puzzle</button>
+            <button class="tab-btn" onclick="setCategory('Sports')">Sports</button>
+            <button class="tab-btn" onclick="setCategory('Favorites')">★ Favorites</button>
+          </div>
+        </div>
+
+        <!-- Games Grid -->
+        <div id="games-grid" class="games-grid"></div>
+        <div id="empty-state" style="display: none; text-align: center; padding: 4rem 1rem;">
+          <div style="font-size: 1.25rem; font-weight: 700; color: #e2e8f0; margin-bottom: 0.5rem;">No games found</div>
+          <div style="color: #94a3b8; font-size: 0.85rem; margin-bottom: 1.25rem;">Try adjusting your filters or click below to add a game.</div>
+          <button class="primary-btn" style="margin: 0 auto;" onclick="openModal('add-modal')">+ Add Custom Game</button>
+        </div>
+      </div>
+
+      <!-- Game Player Section -->
+      <div id="player-section" class="player-view">
+        <div class="player-header">
+          <div style="display: flex; align-items: center; gap: 0.75rem;">
+            <button class="btn-back" onclick="goHome()">← Back to Games</button>
+            <div>
+              <h2 id="player-title" class="font-display" style="font-size: 1.25rem; font-weight: 700; color: #fff;">Game</h2>
+              <div style="font-size: 0.75rem; color: #34d399;">● Unblocked Iframe Sandbox</div>
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 0.5rem;">
+            <button class="btn-back" id="like-btn" onclick="toggleLike()">👍 <span id="like-count">0</span></button>
+            <button class="btn-back" id="fav-btn" onclick="toggleCurrentFav()">★ Favorite</button>
+            <button class="btn-back" onclick="reloadFrame()">↻ Reload</button>
+            <button class="btn-back" onclick="toggleTheater()">⤢ Theater</button>
+            <button class="primary-btn" onclick="toggleFullscreen()">⛶ Fullscreen</button>
+          </div>
+        </div>
+
+        <div id="iframe-box" class="iframe-box">
+          <iframe
+            id="active-iframe"
+            src=""
+            allow="autoplay; payment; fullscreen; microphone; focus-without-user-activation *; screen-wake-lock; gamepad; clipboard-read; clipboard-write; accelerometer; gyroscope; keyboard-map;"
+            sandbox="allow-forms allow-modals allow-orientation-lock allow-pointer-lock allow-presentation allow-scripts allow-same-origin allow-downloads allow-popups allow-popups-to-escape-sandbox"
+          ></iframe>
+        </div>
+
+        <div style="margin-top: 1.5rem; background: var(--surface-card); border: 1px solid var(--border-color); border-radius: 0.75rem; padding: 1.25rem;">
+          <h3 style="font-size: 1rem; font-weight: 700; color: #fff; margin-bottom: 0.5rem;">Controls & Guide</h3>
+          <div id="player-controls" style="display: flex; flex-wrap: wrap; gap: 0.5rem; font-size: 0.8rem; color: #cbd5e1;"></div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Floating Panic Button -->
+    <button class="panic-btn" onclick="activateScreenMask('classroom')">
+      <span>🛡 Disguise Screen</span>
+      <span style="opacity: 0.7; font-size: 0.7rem; font-family: monospace;">]</span>
+    </button>
+
+    <!-- Tab Cloak Modal -->
+    <div id="cloak-modal" class="modal-backdrop">
+      <div class="modal-box">
+        <div class="modal-header">
+          <div class="modal-title">Tab Disguise (Cloaker)</div>
+          <button class="modal-close" onclick="closeModal('cloak-modal')">✕</button>
+        </div>
+        <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 1rem;">
+          Changes your browser tab's title and favicon so it blends in seamlessly.
+        </p>
+
+        <div style="display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1.25rem;">
+          <button class="btn-back" style="justify-content: flex-start; padding: 0.65rem;" onclick="applyCloakPreset('classroom')">
+            <span style="font-size: 1.1rem; margin-right: 0.5rem;">🏫</span>
+            <div style="text-align: left;">
+              <div style="font-weight: 600; font-size: 0.85rem;">Google Classroom</div>
+              <div style="font-size: 0.7rem; color: #94a3b8;">Classes</div>
+            </div>
+          </button>
+          <button class="btn-back" style="justify-content: flex-start; padding: 0.65rem;" onclick="applyCloakPreset('gdrive')">
+            <span style="font-size: 1.1rem; margin-right: 0.5rem;">📁</span>
+            <div style="text-align: left;">
+              <div style="font-weight: 600; font-size: 0.85rem;">Google Drive</div>
+              <div style="font-size: 0.7rem; color: #94a3b8;">My Drive - Google Drive</div>
+            </div>
+          </button>
+          <button class="btn-back" style="justify-content: flex-start; padding: 0.65rem;" onclick="applyCloakPreset('docs')">
+            <span style="font-size: 1.1rem; margin-right: 0.5rem;">📄</span>
+            <div style="text-align: left;">
+              <div style="font-weight: 600; font-size: 0.85rem;">Google Docs</div>
+              <div style="font-size: 0.7rem; color: #94a3b8;">Biology Notes - Google Docs</div>
+            </div>
+          </button>
+          <button class="btn-back" style="justify-content: flex-start; padding: 0.65rem;" onclick="applyCloakPreset('canvas')">
+            <span style="font-size: 1.1rem; margin-right: 0.5rem;">🔴</span>
+            <div style="text-align: left;">
+              <div style="font-weight: 600; font-size: 0.85rem;">Canvas LMS</div>
+              <div style="font-size: 0.7rem; color: #94a3b8;">Dashboard</div>
+            </div>
+          </button>
+          <button class="btn-back" style="justify-content: flex-start; padding: 0.65rem;" onclick="applyCloakPreset('default')">
+            <span style="font-size: 1.1rem; margin-right: 0.5rem;">🎮</span>
+            <div style="text-align: left;">
+              <div style="font-weight: 600; font-size: 0.85rem;">Reset to Default</div>
+              <div style="font-size: 0.7rem; color: #94a3b8;">ArcadeVault - Unblocked Games</div>
+            </div>
+          </button>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Or Custom Tab Title</label>
+          <div style="display: flex; gap: 0.5rem;">
+            <input type="text" id="custom-title-input" class="form-input" placeholder="e.g. History Homework" />
+            <button class="primary-btn" onclick="applyCustomTitle()">Apply</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Add Custom Game Modal -->
+    <div id="add-modal" class="modal-backdrop">
+      <div class="modal-box">
+        <div class="modal-header">
+          <div class="modal-title">Add Custom Game</div>
+          <button class="modal-close" onclick="closeModal('add-modal')">✕</button>
+        </div>
+        <form onsubmit="handleAddGame(event)">
+          <div class="form-group">
+            <label class="form-label">Game Title *</label>
+            <input type="text" id="add-title" class="form-input" required placeholder="e.g. Slope 3D" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Category</label>
+            <select id="add-category" class="form-input">
+              <option value="Action">Action</option>
+              <option value="Arcade">Arcade</option>
+              <option value="Retro">Retro</option>
+              <option value="Puzzle">Puzzle</option>
+              <option value="Sports">Sports</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Iframe Embed Code or URL *</label>
+            <textarea id="add-iframe" class="form-input" rows="3" required placeholder="Paste full <iframe>...</iframe> or https://..."></textarea>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Description (Optional)</label>
+            <input type="text" id="add-desc" class="form-input" placeholder="Short description" />
+          </div>
+          <div style="display: flex; justify-content: flex-end; gap: 0.5rem; margin-top: 1rem;">
+            <button type="button" class="btn-back" onclick="closeModal('add-modal')">Cancel</button>
+            <button type="submit" class="primary-btn">Save to Games JSON</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- JSON Database Modal -->
+    <div id="json-modal" class="modal-backdrop">
+      <div class="modal-box" style="max-width: 40rem;">
+        <div class="modal-header">
+          <div class="modal-title">games.json Database</div>
+          <button class="modal-close" onclick="closeModal('json-modal')">✕</button>
+        </div>
+        <pre id="json-pre" style="background: #020617; border: 1px solid var(--border-color); padding: 1rem; border-radius: 0.5rem; font-size: 0.75rem; color: #a5b4fc; max-height: 20rem; overflow: auto;"></pre>
+        <div style="display: flex; justify-content: flex-end; gap: 0.5rem; margin-top: 1rem;">
+          <button class="btn-back" onclick="copyJson()">Copy JSON</button>
+          <button class="primary-btn" onclick="downloadJson()">Download games.json</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Screen Mask (Emergency Boss Key) -->
+    <div id="screen-mask">
+      <div style="position: fixed; top: 10px; right: 10px; z-index: 10000; background: #202124; color: #fff; padding: 4px 10px; border-radius: 6px; font-size: 11px; display: flex; gap: 8px; align-items: center;">
+        <span>Disguise Active (Press ESC or click)</span>
+        <button style="background: #1a73e8; color: #fff; border: none; padding: 2px 8px; border-radius: 4px; cursor: pointer;" onclick="exitScreenMask()">Exit Mask</button>
+      </div>
+
+      <div style="background: #fff; border-bottom: 1px solid #dadce0; padding: 12px 24px; display: flex; justify-content: space-between; align-items: center;">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <div style="background: #0f9d58; color: #fff; width: 32px; height: 32px; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-weight: bold;">C</div>
+          <div>
+            <div style="font-weight: 600; font-size: 15px; color: #3c4043;">AP Biology (Period 3) - Harrison</div>
+            <div style="font-size: 12px; color: #70757a;">Assignment Details</div>
+          </div>
+        </div>
+        <div style="font-size: 13px; color: #5f6368;">Due Tomorrow, 11:59 PM</div>
+      </div>
+
+      <div style="max-width: 800px; margin: 30px auto; padding: 24px; background: #fff; border: 1px solid #dadce0; border-radius: 8px;">
+        <h2 style="font-size: 20px; color: #202124; margin-bottom: 8px;">Unit 4: Photosynthesis & Respiration Rates Lab</h2>
+        <div style="font-size: 12px; color: #70757a; margin-bottom: 16px;">Dr. Harrison · 100 points</div>
+        <p style="font-size: 14px; line-height: 1.6; color: #3c4043; margin-bottom: 16px;">
+          Please complete your laboratory analysis calculating the rate of oxygen consumption using the yeast respirometers.
+          Enter your notes and observations directly below.
+        </p>
+        <textarea style="width: 100%; height: 260px; padding: 12px; font-size: 13px; border: 1px solid #dadce0; border-radius: 4px; outline: none; font-family: sans-serif; resize: none;">Lab Notes - Group 3:
+1. Trial 1 (Glucose 5%): Observed 0.8 mL CO2 displacement at 5 min interval.
+2. Trial 2 (Sucrose 5%): Observed 0.5 mL CO2 displacement at 5 min interval.
+Conclusion: Monosaccharide substrate exhibits higher initial catabolic rate during glycolysis.</textarea>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+      <div>ArcadeVault · Unblocked Games Portal · Stored in games.json with Iframe Support</div>
+      <div style="margin-top: 0.5rem; font-size: 0.75rem; color: #64748b;">Press ] for emergency screen mask · Built for high-speed in-browser play</div>
+    </footer>
+
+    <!-- Core Interactive Application Script -->
+    <script>
+      // Fallback default games data so games are NEVER missing even if fetch fails
+      const DEFAULT_GAMES = [
+        {
+          id: "bloxity-io",
+          title: "Bloxity.io",
+          category: "Action",
+          description: "Bloxity.io is a 3D obby parkour platformer. Leap through floating obstacle courses, avoid traps, master challenging jumps, and race to checkpoints.",
+          thumbnail: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=600&auto=format&fit=crop&q=80",
+          iframeUrl: "https://bloxity.io/?mp_assets=https%3A%2F%2Fs2.minijuegosgratis.com%2F&mp_embed=0&mp_game_id=258630&mp_game_uid=bloxity-io&mp_game_url=https%3A%2F%2Fwww.miniplay.com%2Fgame%2Fbloxity-io&mp_int=1&mp_locale=en_US&mp_player_type=IFRAME&mp_site_https_url=https%3A%2F%2Fwww.miniplay.com%2F&mp_site_name=miniplay.com&mp_site_url=https%3A%2F%2Fwww.miniplay.com%2F&mp_timezone=America%2FChicago&mp_view_type=",
+          controls: [
+            "WASD or Arrow Keys to move",
+            "Spacebar to jump",
+            "Mouse to look around (Pointer Lock)",
+            "Shift to sprint / R to restart checkpoint"
+          ],
+          tags: ["3D", "Obby", "Parkour", "Action"],
+          rating: 4.9,
+          plays: 58900,
+          releaseYear: "2024"
+        }
+      ];
+
+      let allGames = [];
+      let activeCategory = 'All';
+      let searchQuery = '';
+      let sortBy = 'popular';
+      let favorites = JSON.parse(localStorage.getItem('arcade_favs') || '[]');
+      let activeGame = null;
+      let likes = {};
+
+      // SVGs for Tab Cloak
+      const CLOAK_ICONS = {
+        default: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%236366f1'%3E%3Cpath d='M21 6H3c-1.1 0-2 .9-2 2v8c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-10 7H8v3H6v-3H3v-2h3V8h2v3h3v2zm4.5 2c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm4-3c-.83 0-1.5-.67-1.5-1.5S18.67 9 19.5 9s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z'/%3E%3C/svg%3E",
+        classroom: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect x='4' y='8' width='56' height='48' rx='6' fill='%230f9d58'/%3E%3Crect x='8' y='12' width='48' height='40' rx='4' fill='%23285c3f'/%3E%3Ccircle cx='32' cy='26' r='6' fill='%23e0e0e0'/%3E%3Cpath d='M20 44c0-6 6-8 12-8s12 2 12 8z' fill='%23e0e0e0'/%3E%3Crect x='4' y='52' width='56' height='4' rx='2' fill='%23f4b400'/%3E%3C/svg%3E",
+        gdrive: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 87.3 78'%3E%3Cpath d='M6.6 66.85l3.85 6.65c.8 1.4 1.95 2.5 3.3 3.3l13.75-23.8H0c0 1.55.4 3.1 1.2 4.5z' fill='%230066da'/%3E%3Cpath d='M43.65 25L29.9 1.2c-1.35.8-2.5 1.9-3.3 3.3l-25.4 44C.4 50 0 51.55 0 53.1h27.5z' fill='%2300ac47'/%3E%3Cpath d='M73.55 76.8c1.35-.8 2.5-1.9 3.3-3.3l1.6-2.75 7.65-13.25c.8-1.4 1.2-2.95 1.2-4.5H59.8l5.85 13.8z' fill='%23ea4335'/%3E%3C/svg%3E",
+        docs: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Cpath fill='%232684fc' d='M30 4H10c-2.2 0-4 1.8-4 4v32c0 2.2 1.8 4 4 4h28c2.2 0 4-1.8 4-4V16L30 4z'/%3E%3Cpath fill='%23005fb8' d='M30 4v12h12L30 4z'/%3E%3Cpath fill='%23fff' d='M14 22h20v2.5H14zm0 6h20v2.5H14zm0 6h14v2.5H14z'/%3E%3C/svg%3E",
+        canvas: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='14' fill='%23e02424'/%3E%3Ccircle cx='16' cy='7' r='2.5' fill='white'/%3E%3Ccircle cx='22.5' cy='9.5' r='2.5' fill='white'/%3E%3Ccircle cx='25' cy='16' r='2.5' fill='white'/%3E%3C/svg%3E"
+      };
+
+      // Initialize
+      async function init() {
+        try {
+          const res = await fetch('./games.json');
+          if (res.ok) {
+            const data = await res.json();
+            if (Array.isArray(data) && data.length > 0) {
+              allGames = data;
+            } else {
+              allGames = DEFAULT_GAMES;
+            }
+          } else {
+            allGames = DEFAULT_GAMES;
+          }
+        } catch (e) {
+          allGames = DEFAULT_GAMES;
+        }
+
+        // Merge any user custom games
+        const custom = JSON.parse(localStorage.getItem('arcade_custom_games') || '[]');
+        if (custom.length) allGames = [...custom, ...allGames];
+
+        // Restore cloak
+        const savedCloak = localStorage.getItem('arcade_cloak') || 'default';
+        if (savedCloak !== 'default') applyCloakPreset(savedCloak);
+
+        updateFavCount();
+        renderGames();
+        updateJsonView();
+      }
+
+      function updateFavCount() {
+        document.getElementById('fav-count').innerText = favorites.length;
+      }
+
+      function renderGames() {
+        const grid = document.getElementById('games-grid');
+        const empty = document.getElementById('empty-state');
+        grid.innerHTML = '';
+
+        let filtered = [...allGames];
+        if (activeCategory === 'Favorites') {
+          filtered = filtered.filter(g => favorites.includes(g.id));
+        } else if (activeCategory !== 'All') {
+          filtered = filtered.filter(g => g.category.toLowerCase() === activeCategory.toLowerCase());
+        }
+
+        if (searchQuery.trim()) {
+          const q = searchQuery.toLowerCase().trim();
+          filtered = filtered.filter(g => g.title.toLowerCase().includes(q) || g.description.toLowerCase().includes(q));
+        }
+
+        if (sortBy === 'popular') filtered.sort((a,b) => b.plays - a.plays);
+        if (sortBy === 'rating') filtered.sort((a,b) => b.rating - a.rating);
+        if (sortBy === 'az') filtered.sort((a,b) => a.title.localeCompare(b.title));
+
+        if (filtered.length === 0) {
+          empty.style.display = 'block';
+        } else {
+          empty.style.display = 'none';
+          filtered.forEach(game => {
+            const isFav = favorites.includes(game.id);
+            const card = document.createElement('div');
+            card.className = 'game-card';
+            card.onclick = () => openGame(game);
+            card.innerHTML = `
+              <div class="game-card-thumb">
+                <img src="${game.thumbnail}" alt="${game.title}" onerror="this.src='https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=600&auto=format&fit=crop&q=80'" />
+                <button class="fav-star-btn ${isFav ? 'active' : ''}" onclick="toggleFav(event, '${game.id}')">★</button>
+              </div>
+              <div class="game-card-body">
+                <div>
+                  <div class="game-title">${game.title}</div>
+                  <div class="game-desc">${game.description}</div>
+                </div>
+                <div class="game-meta">
+                  <span>${game.category}</span>
+                  <span>★ ${game.rating} · ${(game.plays / 1000).toFixed(1)}k plays</span>
+                </div>
+              </div>
+            `;
+            grid.appendChild(card);
+          });
+        }
+      }
+
+      function openGame(game) {
+        activeGame = game;
+        document.getElementById('lobby-section').style.display = 'none';
+        document.getElementById('player-section').style.display = 'block';
+        document.getElementById('player-title').innerText = game.title;
+        document.getElementById('active-iframe').src = game.iframeUrl;
+        
+        // Controls
+        const ctrlBox = document.getElementById('player-controls');
+        ctrlBox.innerHTML = '';
+        (game.controls || ['WASD to move', 'Space to jump']).forEach(c => {
+          const el = document.createElement('div');
+          el.style.cssText = 'background:#020617; border:1px solid #1e293b; padding:4px 8px; border-radius:4px;';
+          el.innerText = '• ' + c;
+          ctrlBox.appendChild(el);
+        });
+
+        const favBtn = document.getElementById('fav-btn');
+        favBtn.innerText = favorites.includes(game.id) ? '★ Favorited' : '☆ Favorite';
+        
+        // Likes
+        const lCount = likes[game.id] || Math.floor(game.plays / 25) + 38;
+        document.getElementById('like-count').innerText = lCount;
+
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+      function goHome() {
+        activeGame = null;
+        document.getElementById('active-iframe').src = 'about:blank';
+        document.getElementById('player-section').style.display = 'none';
+        document.getElementById('lobby-section').style.display = 'block';
+      }
+
+      function playFeaturedGame() {
+        if (allGames.length) openGame(allGames[0]);
+      }
+
+      function playRandomGame() {
+        if (allGames.length) {
+          const rand = allGames[Math.floor(Math.random() * allGames.length)];
+          openGame(rand);
+        }
+      }
+
+      function toggleFav(e, id) {
+        e.stopPropagation();
+        if (favorites.includes(id)) {
+          favorites = favorites.filter(f => f !== id);
+        } else {
+          favorites.push(id);
+        }
+        localStorage.setItem('arcade_favs', JSON.stringify(favorites));
+        updateFavCount();
+        renderGames();
+      }
+
+      function toggleCurrentFav() {
+        if (!activeGame) return;
+        toggleFav({ stopPropagation: () => {} }, activeGame.id);
+        const favBtn = document.getElementById('fav-btn');
+        favBtn.innerText = favorites.includes(activeGame.id) ? '★ Favorited' : '☆ Favorite';
+      }
+
+      function toggleLike() {
+        if (!activeGame) return;
+        likes[activeGame.id] = (likes[activeGame.id] || 0) + 1;
+        document.getElementById('like-count').innerText = likes[activeGame.id];
+      }
+
+      function reloadFrame() {
+        const frame = document.getElementById('active-iframe');
+        if (frame.src) frame.src = frame.src;
+      }
+
+      function toggleTheater() {
+        const box = document.getElementById('iframe-box');
+        box.classList.toggle('theater');
+      }
+
+      function toggleFullscreen() {
+        const box = document.getElementById('iframe-box');
+        if (!document.fullscreenElement) {
+          box.requestFullscreen().catch(() => {});
+        } else {
+          document.exitFullscreen().catch(() => {});
+        }
+      }
+
+      function setCategory(cat) {
+        activeCategory = cat;
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+          btn.classList.toggle('active', btn.innerText.includes(cat) || (cat === 'All' && btn.innerText === 'All Games'));
+        });
+        renderGames();
+      }
+
+      function handleSearch() {
+        searchQuery = document.getElementById('search-input').value;
+        renderGames();
+      }
+
+      function handleSort() {
+        sortBy = document.getElementById('sort-select').value;
+        renderGames();
+      }
+
+      // Tab Cloaker Logic
+      function applyCloakPreset(preset) {
+        const titles = {
+          default: "ArcadeVault - Unblocked Games",
+          classroom: "Classes",
+          gdrive: "My Drive - Google Drive",
+          docs: "Biology Notes - Google Docs",
+          canvas: "Dashboard"
+        };
+        const title = titles[preset] || titles.default;
+        document.title = title;
+        try { if (window.top) window.top.document.title = title; } catch(e) {}
+
+        const fav = document.getElementById('app-favicon');
+        if (fav && CLOAK_ICONS[preset]) fav.href = CLOAK_ICONS[preset];
+        localStorage.setItem('arcade_cloak', preset);
+        closeModal('cloak-modal');
+      }
+
+      function applyCustomTitle() {
+        const val = document.getElementById('custom-title-input').value.trim();
+        if (val) {
+          document.title = val;
+          try { if (window.top) window.top.document.title = val; } catch(e) {}
+          closeModal('cloak-modal');
+        }
+      }
+
+      // Screen Mask
+      function activateScreenMask() {
+        document.getElementById('screen-mask').style.display = 'block';
+      }
+      function exitScreenMask() {
+        document.getElementById('screen-mask').style.display = 'none';
+      }
+
+      // Modals
+      function openModal(id) { document.getElementById(id).style.display = 'flex'; }
+      function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+
+      // Add Game
+      function handleAddGame(e) {
+        e.preventDefault();
+        const raw = document.getElementById('add-iframe').value.trim();
+        let url = raw;
+        if (raw.startsWith('<iframe')) {
+          const match = raw.match(/src=["']([^"']+)["']/i);
+          if (match) url = match[1];
+        }
+
+        const newGame = {
+          id: 'custom-' + Date.now(),
+          title: document.getElementById('add-title').value.trim(),
+          category: document.getElementById('add-category').value,
+          description: document.getElementById('add-desc').value.trim() || 'Custom embedded game',
+          thumbnail: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=600&auto=format&fit=crop&q=80',
+          iframeUrl: url,
+          controls: ['Standard mouse & keyboard'],
+          tags: ['Custom'],
+          rating: 5.0,
+          plays: 1
+        };
+
+        const custom = JSON.parse(localStorage.getItem('arcade_custom_games') || '[]');
+        custom.unshift(newGame);
+        localStorage.setItem('arcade_custom_games', JSON.stringify(custom));
+
+        allGames.unshift(newGame);
+        closeModal('add-modal');
+        renderGames();
+        openGame(newGame);
+        updateJsonView();
+      }
+
+      // JSON viewer
+      function updateJsonView() {
+        document.getElementById('json-pre').innerText = JSON.stringify(allGames, null, 2);
+      }
+      function copyJson() {
+        navigator.clipboard.writeText(JSON.stringify(allGames, null, 2));
+        alert('Copied games.json to clipboard!');
+      }
+      function downloadJson() {
+        const blob = new Blob([JSON.stringify(allGames, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'games.json';
+        a.click();
+      }
+
+      // Hotkey listeners
+      window.addEventListener('keydown', e => {
+        if (e.key === ']' || e.key === '\\') {
+          const mask = document.getElementById('screen-mask');
+          mask.style.display = mask.style.display === 'block' ? 'none' : 'block';
+        }
+        if (e.key === 'Escape') {
+          exitScreenMask();
+          document.querySelectorAll('.modal-backdrop').forEach(m => m.style.display = 'none');
+        }
+        if (e.key === '`' && !['INPUT','TEXTAREA'].includes(e.target.tagName)) {
+          openModal('cloak-modal');
+        }
+      });
+
+      // Start
+      init();
     </script>
   </body>
 </html>
-
