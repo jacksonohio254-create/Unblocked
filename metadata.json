@@ -1,0 +1,7 @@
+{
+  "name": "ArcadeVault - Unblocked Games",
+  "description": "A clean, fast unblocked games portal featuring classic arcade, puzzle, retro, and action games playable directly in-browser with iframe support, custom game embeds, and tab disguise.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
+
