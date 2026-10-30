@@ -209,9 +209,9 @@ export const GamePlayer: React.FC<GamePlayerProps> = ({
           title={game.title}
           src={game.srcDoc ? undefined : game.iframeUrl}
           srcDoc={game.srcDoc}
-          sandbox="allow-scripts allow-same-origin allow-forms allow-pointer-lock"
+          sandbox="allow-forms allow-modals allow-orientation-lock allow-pointer-lock allow-presentation allow-scripts allow-same-origin allow-downloads allow-popups allow-popups-to-escape-sandbox"
           className="w-full h-full border-0 bg-slate-950"
-          allow="autoplay; fullscreen; keyboard"
+          allow="autoplay; payment; fullscreen; microphone; focus-without-user-activation *; screen-wake-lock; gamepad; clipboard-read; clipboard-write; accelerometer; gyroscope; keyboard-map;"
         />
       </div>
 

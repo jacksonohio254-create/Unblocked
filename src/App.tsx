@@ -53,9 +53,9 @@ export default function App() {
   const [favorites, setFavorites] = useState<string[]>(() => {
     try {
       const saved = localStorage.getItem('arcade_favorites');
-      return saved ? JSON.parse(saved) : ['snake-classic', 'tetris-arcade', 'game-2048'];
+      return saved ? JSON.parse(saved) : [];
     } catch {
-      return ['snake-classic', 'tetris-arcade', 'game-2048'];
+      return [];
     }
   });
 
@@ -158,6 +158,10 @@ export default function App() {
 
   // Launch random game
   const handleRandomGame = () => {
+    if (games.length === 0) {
+      setIsAddModalOpen(true);
+      return;
+    }
     const pool = games.filter((g) => g.id !== activeGame?.id);
     if (pool.length === 0) return;
     const random = pool[Math.floor(Math.random() * pool.length)];
@@ -204,8 +208,9 @@ export default function App() {
     return result;
   }, [games, selectedCategory, searchQuery, sortBy, favorites, recentIds]);
 
-  // Featured Game Spotlight (e.g. Tetris or top played)
+  // Featured Game Spotlight (guarded if games array is empty)
   const featuredGame = useMemo(() => {
+    if (games.length === 0) return null;
     return games.find((g) => g.id === 'tetris-arcade') || games[0];
   }, [games]);
 
@@ -245,7 +250,7 @@ export default function App() {
           /* Lobby / Catalog View */
           <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-6 sm:pt-8 space-y-10">
             {/* Hero / Spotlight Section */}
-            {selectedCategory === 'All' && !searchQuery && (
+            {selectedCategory === 'All' && !searchQuery && featuredGame && (
               <section className="relative rounded-2xl overflow-hidden border border-slate-800 bg-gradient-to-br from-slate-900 via-indigo-950/30 to-slate-900 p-6 sm:p-8">
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
                   <div className="lg:col-span-7 space-y-4">
@@ -443,34 +448,44 @@ export default function App() {
               </div>
             ) : (
               /* Empty State */
-              <div className="text-center py-16 px-4 bg-slate-900/40 border border-slate-800/80 rounded-2xl">
+              <div className="text-center py-20 px-4 bg-slate-900/40 border border-slate-800/80 rounded-2xl">
                 <Gamepad2 className="w-12 h-12 text-slate-600 mx-auto mb-3" />
                 <h3 className="text-base font-bold text-slate-200 font-display">
-                  No games found
+                  {games.length === 0 ? 'No games in library' : 'No games found'}
                 </h3>
-                <p className="text-xs text-slate-400 mt-1 max-w-sm mx-auto">
-                  {searchQuery
+                <p className="text-xs text-slate-400 mt-1 max-w-md mx-auto leading-relaxed">
+                  {games.length === 0
+                    ? 'All games have been deleted. You can embed your own games via iframe URL or raw HTML code using the Add Game button.'
+                    : searchQuery
                     ? `No titles matched "${searchQuery}". Try a different keyword or reset filters.`
                     : selectedCategory === 'Favorites'
                     ? 'You have not favorited any games yet. Click the star icon on any game card to add it to favorites.'
                     : 'No games available in this category.'}
                 </p>
-                <div className="mt-4 flex items-center justify-center gap-3">
-                  <button
-                    onClick={() => {
-                      setSearchQuery('');
-                      setSelectedCategory('All');
-                    }}
-                    className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold rounded-lg transition-colors cursor-pointer"
-                  >
-                    Reset All Filters
-                  </button>
+                <div className="mt-5 flex items-center justify-center gap-3">
                   <button
                     onClick={() => setIsAddModalOpen(true)}
+                    className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold rounded-lg transition-colors cursor-pointer shadow-sm"
+                  >
+                    + Add Custom Game
+                  </button>
+                  <button
+                    onClick={() => setIsJsonModalOpen(true)}
                     className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-medium rounded-lg transition-colors cursor-pointer"
                   >
-                    Add Custom Game
+                    View games.json
                   </button>
+                  {games.length > 0 && (
+                    <button
+                      onClick={() => {
+                        setSearchQuery('');
+                        setSelectedCategory('All');
+                      }}
+                      className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-slate-200 text-xs font-medium rounded-lg transition-colors cursor-pointer"
+                    >
+                      Reset Filters
+                    </button>
+                  )}
                 </div>
               </div>
             )}
